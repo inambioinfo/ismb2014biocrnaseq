@@ -27,12 +27,119 @@
 </article>
 
 <article class="" id="slide-2" style="background:;">
-  <h3>Preparing gene models</h3>
+  <h3>Preparing gene models part 1</h3>
   <p><a href="http://www.bioconductor.org/packages/release/bioc/html/GenomicFeatures.html">GenomicFeatures</a></p>
+
+<pre><code class="r">library( &quot;GenomicFeatures&quot; )
+# takes ~10 min
+txdb &lt;- makeTranscriptDbFromBiomart(
+  biomart=&quot;ensembl&quot;,
+  dataset=&quot;hsapiens_gene_ensembl&quot; )
+</code></pre>
+
+<p>smart to use <code>saveDb()</code> to only do this once</p>
 
 </article>
 
 <article class="" id="slide-3" style="background:;">
+  <h3>Preparing gene models part 2</h3>
+  <ul>
+<li><code>makeTranscriptDbFromGFF()</code> accepts GTF</li>
+<li><code>library(TxDb.Hsapiens.UCSC.hg19.knownGene)</code> ready to go</li>
+<li>soon also, <code>AnnotationDbi</code> will offer ready to go</li>
+</ul>
+
+</article>
+
+<article class="" id="slide-4" style="background:;">
+  <h3>Super useful</h3>
+  <pre><code class="r">seqlevelsStyle(gr) &lt;- &quot;NCBI&quot;
+seqlevelsStyle(gr) &lt;- &quot;UCSC&quot;
+</code></pre>
+
+</article>
+
+<article class="" id="slide-5" style="background:;">
+  <h3>What&#39;s in txdb?</h3>
+  <p><code>sqlite3 txdb.sqlite &#39;.tables&#39;</code></p>
+
+<p><code>cds exon metadata transcript chrominfo gene splicing</code></p>
+
+</article>
+
+<article class="" id="slide-6" style="background:;">
+  <h3>What&#39;s in txdb?</h3>
+  <pre><code class="r">library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+TxDb.Hsapiens.UCSC.hg19.knownGene
+</code></pre>
+
+<pre><code>## TranscriptDb object:
+## | Db type: TranscriptDb
+## | Supporting package: GenomicFeatures
+## | Data source: UCSC
+## | Genome: hg19
+## | Organism: Homo sapiens
+## | UCSC Table: knownGene
+## | Resource URL: http://genome.ucsc.edu/
+## | Type of Gene ID: Entrez Gene ID
+## | Full dataset: yes
+## | miRBase build ID: GRCh37
+## | transcript_nrow: 82960
+## | exon_nrow: 289969
+## | cds_nrow: 237533
+## | Db created by: GenomicFeatures package from Bioconductor
+## | Creation time: 2014-03-17 16:15:59 -0700 (Mon, 17 Mar 2014)
+## | GenomicFeatures version at creation time: 1.15.11
+## | RSQLite version at creation time: 0.11.4
+## | DBSCHEMAVERSION: 1.0
+</code></pre>
+
+</article>
+
+<article class="" id="slide-7" style="background:;">
+  <h3>Extract exons for each gene</h3>
+  <pre><code class="r"># takes ~30 seconds
+exonsByGene &lt;- exonsBy( txdb, by=&quot;gene&quot; )
+</code></pre>
+
+</article>
+
+<article class="" id="slide-8" style="background:;">
+  <h3>Extract exons for each gene</h3>
+  <pre><code class="r"># TODO show exonsByGene
+</code></pre>
+
+</article>
+
+<article class="" id="slide-9" style="background:;">
+  <h3>Read counting</h3>
+  <pre><code class="r">library( &quot;Rsamtools&quot; )
+bamLst &lt;- BamFileList( fls, yieldSize=2000000 )
+</code></pre>
+
+</article>
+
+<article class="" id="slide-10" style="background:;">
+  <h3>Read counting</h3>
+  <pre><code class="r">library( &quot;GenomicAlignments&quot; )
+register( MulticoreParam( workers=4 ) )
+se &lt;- summarizeOverlaps( features=exonsByGene,
+                        reads=bamLst,
+                        mode=&quot;Union&quot;,
+                        singleEnd=FALSE,
+                        ignore.strand=TRUE,
+                        fragments=TRUE )
+</code></pre>
+
+</article>
+
+<article class="" id="slide-11" style="background:;">
+  <h3>SummarizedExperiment</h3>
+  <p><center><img src="summarizedexperiment.png" width=700/></center></p>
+
+</article>
+
+<article class="" id="slide-12" style="background:;">
   <h3>The generalized linear model part 1</h3>
   <p>\[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]</p>
 
@@ -50,7 +157,7 @@
 
 </article>
 
-<article class="" id="slide-4" style="background:;">
+<article class="" id="slide-13" style="background:;">
   <h3>The generalized linear model part 2</h3>
   <p>\[ \log q_{ij} = \sum_r x_{jr} \beta_{ir} \]</p>
 
@@ -68,9 +175,13 @@
 \beta_0 \\
 \beta_1 \end{array} \right) \] </p>
 
+<ul>
+<li>results are logarithm base 2 fold changes </li>
+</ul>
+
 </article>
 
-<article class="" id="slide-5" style="background:;">
+<article class="" id="slide-14" style="background:;">
   <h3>Multigroup comparisons in DESeq2</h3>
   <p>\[ \begin{array}{c}
 \log q_1 \\
@@ -94,9 +205,26 @@
 
 </article>
 
-<article class="" id="slide-6" style="background:;">
+<article class="" id="slide-15" style="background:;">
   <h3>ReportingTools</h3>
   <p><center><img src="reptools.png" width=700/></center></p>
+
+</article>
+
+<article class="" id="slide-16" style="background:;">
+  <h3>Support</h3>
+  <ul>
+<li>mailing list:
+
+<ol>
+<li>package name in title</li>
+<li>describe experiment, what&#39;s the <em>biological question</em></li>
+<li>provide code</li>
+<li>sessionInfo()</li>
+</ol></li>
+<li><code>browseVignettes(&quot;pkg&quot;)</code></li>
+<li><code>?function</code></li>
+</ul>
 
 </article>
 
