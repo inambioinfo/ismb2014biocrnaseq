@@ -15,7 +15,7 @@ knit        : slidify::knit2slides
 
 1. preparing gene models
 2. read counting
-3. QA (quality assessment) & EDA (exploratory data analysis)
+3. EDA (exploratory data analysis)
 4. differential expression analysis
 5. annotating results
 
@@ -147,6 +147,23 @@ se <- summarizeOverlaps( features=exonsByGene,
 
 ---
 
+# Metadata stored without user effort
+
+
+```r
+metadata( rowData( se ) )
+```
+
+---
+
+# Exploratory data analysis (EDA)
+
+---
+
+# Differential expression analysis
+
+---
+
 # The generalized linear model part 1
 
 \[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]
@@ -207,6 +224,20 @@ se <- summarizeOverlaps( features=exonsByGene,
 
 ---
 
+# Normalization for sample-specific GC and transcript length
+
+<center><img src="cqn.png" width=700/></center>
+
+---
+
+# Controlling for unknown batch
+
+<center><img src="sva.png" width=700/></center>
+
+[Leek and Storey (2007)](http://dx.doi.org/10.1371/journal.pgen.0030161)
+
+---
+
 # ReportingTools
 
 <center><img src="reptools.png" width=700/></center>
@@ -222,3 +253,15 @@ se <- summarizeOverlaps( features=exonsByGene,
     4. sessionInfo()
 - `browseVignettes("pkg")`
 - `?function`
+
+---
+
+# Thanks
+
+- Bioconductor core team
+- *DESeq*/*DEXSeq* team
+    - Simon Anders
+    - Alejandro Reyes
+    - Wolfgang Huber
+- Rafael Irizarry
+

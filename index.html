@@ -19,7 +19,7 @@
   <ol>
 <li>preparing gene models</li>
 <li>read counting</li>
-<li>QA (quality assessment) &amp; EDA (exploratory data analysis)</li>
+<li>EDA (exploratory data analysis)</li>
 <li>differential expression analysis</li>
 <li>annotating results</li>
 </ol>
@@ -140,6 +140,23 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 </article>
 
 <article class="" id="slide-12" style="background:;">
+  <h3>Metadata stored without user effort</h3>
+  <pre><code class="r">metadata( rowData( se ) )
+</code></pre>
+
+</article>
+
+<article class="" id="slide-13" style="background:;">
+  <h3>Exploratory data analysis (EDA)</h3>
+  
+</article>
+
+<article class="" id="slide-14" style="background:;">
+  <h3>Differential expression analysis</h3>
+  
+</article>
+
+<article class="" id="slide-15" style="background:;">
   <h3>The generalized linear model part 1</h3>
   <p>\[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]</p>
 
@@ -157,7 +174,7 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 </article>
 
-<article class="" id="slide-13" style="background:;">
+<article class="" id="slide-16" style="background:;">
   <h3>The generalized linear model part 2</h3>
   <p>\[ \log q_{ij} = \sum_r x_{jr} \beta_{ir} \]</p>
 
@@ -181,7 +198,7 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 </article>
 
-<article class="" id="slide-14" style="background:;">
+<article class="" id="slide-17" style="background:;">
   <h3>Multigroup comparisons in DESeq2</h3>
   <p>\[ \begin{array}{c}
 \log q_1 \\
@@ -205,13 +222,27 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 </article>
 
-<article class="" id="slide-15" style="background:;">
+<article class="" id="slide-18" style="background:;">
+  <h3>Normalization for sample-specific GC and transcript length</h3>
+  <p><center><img src="cqn.png" width=700/></center></p>
+
+</article>
+
+<article class="" id="slide-19" style="background:;">
+  <h3>Controlling for unknown batch</h3>
+  <p><center><img src="sva.png" width=700/></center></p>
+
+<p><a href="http://dx.doi.org/10.1371/journal.pgen.0030161">Leek and Storey (2007)</a></p>
+
+</article>
+
+<article class="" id="slide-20" style="background:;">
   <h3>ReportingTools</h3>
   <p><center><img src="reptools.png" width=700/></center></p>
 
 </article>
 
-<article class="" id="slide-16" style="background:;">
+<article class="" id="slide-21" style="background:;">
   <h3>Support</h3>
   <ul>
 <li>mailing list:
@@ -224,6 +255,22 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 </ol></li>
 <li><code>browseVignettes(&quot;pkg&quot;)</code></li>
 <li><code>?function</code></li>
+</ul>
+
+</article>
+
+<article class="" id="slide-22" style="background:;">
+  <h3>Thanks</h3>
+  <ul>
+<li>Bioconductor core team</li>
+<li><em>DESeq</em>/<em>DEXSeq</em> team
+
+<ul>
+<li>Simon Anders</li>
+<li>Alejandro Reyes</li>
+<li>Wolfgang Huber</li>
+</ul></li>
+<li>Rafael Irizarry</li>
 </ul>
 
 </article>
