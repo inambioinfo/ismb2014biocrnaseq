@@ -15,7 +15,7 @@
 <body style='display: none'>
 	<section class='slides layout-regular template-regular'>
      <article class="" id="slide-1" style="background:;">
-  <h3>Bioc RNA-Seq workflow</h3>
+  <h3>Bioconductor RNA-Seq workflow</h3>
   <ol>
 <li>preparing gene models</li>
 <li>read counting</li>
@@ -27,6 +27,74 @@
 </article>
 
 <article class="" id="slide-2" style="background:;">
+  <h3>Preparing gene models</h3>
+  <p><a href="http://www.bioconductor.org/packages/release/bioc/html/GenomicFeatures.html">GenomicFeatures</a></p>
+
+</article>
+
+<article class="" id="slide-3" style="background:;">
+  <h3>The generalized linear model part 1</h3>
+  <p>\[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]</p>
+
+<ul>
+<li>Read count \(K_{ij}\) for gene <em>i</em> sample <em>j</em>.</li>
+<li>2 parameter count distribution: mean \(\mu\), dispersion \(\alpha\)</li>
+</ul>
+
+<p>\[ \mu_{ij} = s_{ij} q_{ij} \]</p>
+
+<ul>
+<li>Normalized by size factor \(s_{ij}\), with \(q_{ij}\) remaining</li>
+<li>Often size factor \(s_j\)</li>
+</ul>
+
+</article>
+
+<article class="" id="slide-4" style="background:;">
+  <h3>The generalized linear model part 2</h3>
+  <p>\[ \log q_{ij} = \sum_r x_{jr} \beta_{ir} \]</p>
+
+<p>\[ \begin{array}{c}
+\log q_1 \\
+\log q_2 \\
+\log q_3 \\
+\log q_4 \end{array}
+= \left( \begin{array}{cc}
+1 & 0 \\
+1 & 0 \\
+1 & 1 \\
+1 & 1 \end{array} \right)
+\left( \begin{array}{c}
+\beta_0 \\
+\beta_1 \end{array} \right) \] </p>
+
+</article>
+
+<article class="" id="slide-5" style="background:;">
+  <h3>Multigroup comparisons in DESeq2</h3>
+  <p>\[ \begin{array}{c}
+\log q_1 \\
+\log q_2 \\
+\log q_3 \\
+\log q_4 \\
+\log q_5 \\
+\log q_6 \end{array}
+= \left( \begin{array}{cccc}
+1 & 1 & 0 & 0 \\
+1 & 1 & 0 & 0 \\
+1 & 0 & 1 & 0 \\
+1 & 0 & 1 & 0 \\
+1 & 0 & 0 & 1 \\
+1 & 0 & 0 & 1 \\ \end{array} \right)
+\left( \begin{array}{c}
+\beta_0 \\
+\beta_1 \\
+\beta_2 \\
+\beta_3 \end{array} \right) \] </p>
+
+</article>
+
+<article class="" id="slide-6" style="background:;">
   <h3>ReportingTools</h3>
   <p><center><img src="reptools.png" width=700/></center></p>
 
@@ -36,7 +104,21 @@
 </body>
   <!-- LOAD JAVASCRIPTS  -->
 	<script src='libraries/frameworks/html5slides/default/slides.js'></script>
-	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+	<script type="text/x-mathjax-config">
+	  MathJax.Hub.Config({
+	    tex2jax: {
+	      inlineMath: [['$','$'], ['\\(','\\)']],
+	      processEscapes: true
+	    }
+	  });
+	</script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script> -->
+	<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
 	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
 	<script>hljs.initHighlightingOnLoad();</script>
 	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
