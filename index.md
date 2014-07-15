@@ -279,6 +279,8 @@ transcript expression inference
 \beta_2 \\
 \beta_3 \end{array} \right) \] 
 
+- code and slides on GTEx tissues: [github.com/mikelove/multigroup](https://github.com/mikelove/multigroup)
+
 ---
 
 # Differential expression analysis
