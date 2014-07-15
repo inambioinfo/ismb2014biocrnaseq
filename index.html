@@ -16,15 +16,15 @@
 	<section class='slides layout-regular template-regular'>
      <article class="" id="slide-1" style="background:;">
   <h3>Bioconductor RNA-Seq workflow</h3>
-  <ol>
+  <p>-<em>Michael Love</em>, dept. biostat., HSPH/DFCI</p>
+
+<ol>
 <li>preparing gene models</li>
 <li>read counting</li>
 <li>EDA (exploratory data analysis)</li>
 <li>differential expression analysis</li>
 <li>annotating results</li>
 </ol>
-
-<p><br></p>
 
 <p>slides and code:</p>
 
@@ -53,7 +53,9 @@ txdb &lt;- makeTranscriptDbFromBiomart( biomart=&quot;ensembl&quot;,
 
 <article class="" id="slide-2" style="background:;">
   <h3>Preparing gene models</h3>
-  <ul>
+  <p><br><br></p>
+
+<ul>
 <li><code>makeTranscriptDbFromGFF()</code> accepts GTF</li>
 <li><code>library(TxDb.Hsapiens.UCSC.hg19.knownGene)</code> ready to go</li>
 <li>soon also, <code>AnnotationHub</code> will offer ready to go</li>
@@ -63,7 +65,11 @@ txdb &lt;- makeTranscriptDbFromBiomart( biomart=&quot;ensembl&quot;,
 
 <article class="" id="slide-3" style="background:;">
   <h3>Super useful</h3>
-  <pre><code class="r">seqlevelsStyle(gr) &lt;- &quot;NCBI&quot;
+  <p><br><br></p>
+
+<p>To convert from <code>chrX</code> to <code>X</code>:</p>
+
+<pre><code class="r">seqlevelsStyle(gr) &lt;- &quot;NCBI&quot;
 seqlevelsStyle(gr) &lt;- &quot;UCSC&quot;
 </code></pre>
 
@@ -97,7 +103,11 @@ exonsByGene &lt;- exonsBy( txdb, by=&quot;gene&quot; )
 
 <article class="" id="slide-5" style="background:;">
   <h3>Read counting</h3>
-  <pre><code class="r">library( &quot;Rsamtools&quot; )
+  <p><br><br></p>
+
+<p><code>yieldSize</code> for controlling memory:</p>
+
+<pre><code class="r">library( &quot;Rsamtools&quot; )
 bamLst &lt;- BamFileList( fls, yieldSize=2000000 )
 </code></pre>
 
@@ -162,7 +172,11 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 <article class="" id="slide-9" style="background:;">
   <h3>Add sample data</h3>
-  <pre><code class="r">samples &lt;- read.csv( &quot;sample_data.csv&quot; )
+  <p><br><br></p>
+
+<p><code>DataFrame</code> is a powerful data frame defined in <code>IRanges</code>:</p>
+
+<pre><code class="r">samples &lt;- read.csv( &quot;sample_data.csv&quot; )
 colData( se ) &lt;- DataFrame( samples )
 </code></pre>
 
@@ -196,7 +210,9 @@ transcript expression inference</li>
 
 <article class="" id="slide-12" style="background:;">
   <h3>The generalized linear model</h3>
-  <p>\[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]</p>
+  <p><br></p>
+
+<p>\[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]</p>
 
 <ul>
 <li>Read count \(K_{ij}\) for gene <em>i</em> sample <em>j</em>.</li>
@@ -214,7 +230,9 @@ transcript expression inference</li>
 
 <article class="" id="slide-13" style="background:;">
   <h3>The generalized linear model</h3>
-  <p>\[ \log q_{ij} = \sum_r x_{jr} \beta_{ir} \]</p>
+  <p><br></p>
+
+<p>\[ \log q_{ij} = \sum_r x_{jr} \beta_{ir} \]</p>
 
 <p>\[ \begin{array}{c}
 \log q_1 \\
@@ -238,7 +256,9 @@ transcript expression inference</li>
 
 <article class="" id="slide-14" style="background:;">
   <h3>Multigroup comparisons in DESeq2</h3>
-  <p>\[ \begin{array}{c}
+  <p><br><br></p>
+
+<p>\[ \begin{array}{c}
 \log q_1 \\
 \log q_2 \\
 \log q_3 \\
@@ -295,20 +315,22 @@ conditional quantile normalization</li>
 
 <p><center><img src="cqn.png" width=700/></center></p>
 
-<p><center>cqn package vignette</center></p>
+<p>-<em>cqn</em> package vignette</p>
 
 </article>
 
 <article class="" id="slide-18" style="background:;">
   <h3>Controlling for unknown batch</h3>
-  <ul>
+  <p><br><br></p>
+
+<ul>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/sva.html">sva</a>: <code>svaseq()</code>
 surrogate variable analysis</li>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/RUVSeq.html">RUVSeq</a>:
 remove unwanted variation</li>
 </ul>
 
-<p>returns a matrix with columns which are surrogate variables</p>
+<p>return a matrix with columns which are surrogate variables</p>
 
 </article>
 
@@ -322,7 +344,9 @@ remove unwanted variation</li>
 
 <article class="" id="slide-20" style="background:;">
   <h3>ReportingTools</h3>
-  <pre><code class="r">rprt &lt;- HTMLReport(shortName = &quot;analysis&quot;,
+  <p><br><br></p>
+
+<pre><code class="r">rprt &lt;- HTMLReport(shortName = &quot;analysis&quot;,
                    title = &quot;RNA-Seq analysis&quot;,
                    reportDirectory = &quot;./reports&quot;)
 publish(dds, rprt, pvalueCutoff=0.1,
@@ -340,13 +364,17 @@ finish(rprt)
 
 <article class="" id="slide-21" style="background:;">
   <h3>ReportingTools</h3>
-  <p><center><img src="reptools.png" width=700/></center></p>
+  <p><br><br></p>
+
+<p><center><img src="reptools.png" width=700/></center></p>
 
 </article>
 
 <article class="" id="slide-22" style="background:;">
   <h3>Manual annotation</h3>
-  <ul>
+  <p><br><br></p>
+
+<ul>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/biomaRt.html">biomaRt</a></li>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html">AnnotationDbi</a>: <code>select()</code> function, works with the annotation packages <code>org.Hs.eg.db</code>:</li>
 </ul>

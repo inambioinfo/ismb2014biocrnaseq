@@ -13,13 +13,13 @@ knit        : slidify::knit2slides
 
 # Bioconductor RNA-Seq workflow
 
+-*Michael Love*, dept. biostat., HSPH/DFCI
+
 1. preparing gene models
 2. read counting
 3. EDA (exploratory data analysis)
 4. differential expression analysis
 5. annotating results
-
-<br>
 
 slides and code:
 
@@ -46,6 +46,8 @@ smart to use `saveDb()` to only do this once
 
 # Preparing gene models
 
+<br><br>
+
 - `makeTranscriptDbFromGFF()` accepts GTF
 - `library(TxDb.Hsapiens.UCSC.hg19.knownGene)` ready to go
 - soon also, `AnnotationHub` will offer ready to go
@@ -53,6 +55,10 @@ smart to use `saveDb()` to only do this once
 ---
 
 # Super useful
+
+<br><br>
+
+To convert from `chrX` to `X`:
 
 
 ```r
@@ -96,6 +102,10 @@ head( exonsByGene[[1]] )
 ---
 
 # Read counting
+
+<br><br>
+
+`yieldSize` for controlling memory:
 
 
 ```r
@@ -165,6 +175,10 @@ metadata( rowData( se ) )[[ 1 ]][ 1:6 ]
 
 # Add sample data
 
+<br><br>
+
+`DataFrame` is a powerful data frame defined in `IRanges`:
+
 
 ```r
 samples <- read.csv( "sample_data.csv" )
@@ -201,6 +215,8 @@ transcript expression inference
 
 # The generalized linear model
 
+<br>
+
 \[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]
 
 - Read count $K_{ij}$ for gene *i* sample *j*.
@@ -214,6 +230,8 @@ transcript expression inference
 ---
 
 # The generalized linear model
+
+<br>
 
 \[ \log q_{ij} = \sum_r x_{jr} \beta_{ir} \]
 
@@ -236,6 +254,8 @@ transcript expression inference
 ---
 
 # Multigroup comparisons in DESeq2
+
+<br><br>
 
 \[ \begin{array}{c}
 \log q_1 \\
@@ -296,18 +316,20 @@ conditional quantile normalization
 
 <center><img src="cqn.png" width=700/></center>
 
-<center>cqn package vignette</center>
+-*cqn* package vignette
 
 ---
 
 # Controlling for unknown batch
+
+<br><br>
 
 - [sva](http://www.bioconductor.org/packages/release/bioc/html/sva.html): `svaseq()`
 surrogate variable analysis
 - [RUVSeq](http://www.bioconductor.org/packages/release/bioc/html/RUVSeq.html):
 remove unwanted variation
 
-returns a matrix with columns which are surrogate variables
+return a matrix with columns which are surrogate variables
 
 ---
 
@@ -320,6 +342,8 @@ returns a matrix with columns which are surrogate variables
 ---
 
 # ReportingTools
+
+<br><br>
 
 
 ```r
@@ -339,11 +363,15 @@ finish(rprt)
 
 # ReportingTools
 
+<br><br>
+
 <center><img src="reptools.png" width=700/></center>
 
 ---
 
 # Manual annotation
+
+<br><br>
 
 - [biomaRt](http://www.bioconductor.org/packages/release/bioc/html/biomaRt.html)
 - [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html): `select()` function, works with the annotation packages `org.Hs.eg.db`:
