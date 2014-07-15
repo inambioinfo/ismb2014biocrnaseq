@@ -19,6 +19,13 @@ knit        : slidify::knit2slides
 4. differential expression analysis
 5. annotating results
 
+<br>
+
+slides and code:
+
+- [mikelove.github.io/biocrnaseq](http://mikelove.github.io/biocrnaseq)
+- [github.com/mikelove/biocrnaseq](http://github.com/mikelove/biocrnaseq)
+  
 ---
 
 # Preparing gene models
