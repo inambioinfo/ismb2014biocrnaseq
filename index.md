@@ -25,10 +25,12 @@ slides and code:
 
 - [mikelove.github.io/biocrnaseq](http://mikelove.github.io/biocrnaseq)
 - [github.com/mikelove/biocrnaseq](http://github.com/mikelove/biocrnaseq)
-  
+
 ---
 
 # Preparing gene models
+
+<br><br>
 
 
 ```r
@@ -48,9 +50,9 @@ smart to use `saveDb()` to only do this once
 
 <br><br>
 
-- `makeTranscriptDbFromGFF()` accepts GTF
+- `makeTranscriptDbFromGFF()` accepts GTF files
 - `library(TxDb.Hsapiens.UCSC.hg19.knownGene)` ready to go
-- soon also, `AnnotationHub` will offer ready to go
+- soon `AnnotationHub` will offer ready to go
 
 ---
 
@@ -58,7 +60,7 @@ smart to use `saveDb()` to only do this once
 
 <br><br>
 
-To convert from `chrX` to `X`:
+To convert from `chrX` to `X` and back:
 
 
 ```r
@@ -80,19 +82,17 @@ exonsByGene <- exonsBy( txdb, by="gene" )
 
 
 ```r
-head( exonsByGene[[1]] )
+exonsByGene[[ 1 ]][ 1:4 ]
 ```
 
 ```
-## GRanges with 6 ranges and 2 metadata columns:
+## GRanges with 4 ranges and 2 metadata columns:
 ##       seqnames               ranges strand |   exon_id       exon_name
 ##          <Rle>            <IRanges>  <Rle> | <integer>     <character>
 ##   [1]        X [99883667, 99884983]      - |    664095 ENSE00001459322
 ##   [2]        X [99885756, 99885863]      - |    664096 ENSE00000868868
 ##   [3]        X [99887482, 99887565]      - |    664097 ENSE00000401072
 ##   [4]        X [99887538, 99887565]      - |    664098 ENSE00001849132
-##   [5]        X [99888402, 99888536]      - |    664099 ENSE00003554016
-##   [6]        X [99888402, 99888536]      - |    664100 ENSE00003658801
 ##   ---
 ##   seqlengths:
 ##                    1                 2 ...            LRG_99
@@ -135,6 +135,7 @@ se <- summarizeOverlaps( features=exonsByGene,
 - [GenomicAlignments](http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html)
 - [htseq-count](http://www-huber.embl.de/users/anders/HTSeq/doc/count.html): python library
 - [featureCounts](http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html): `featureCounts()`
+- [easyRNASeq](http://www.bioconductor.org/packages/release/bioc/html/easyRNASeq.html)
 
 ---
 
@@ -210,6 +211,7 @@ differential exon usage
 - [DSS](http://www.bioconductor.org/packages/release/bioc/html/DSS.html)
 - [BitSeq](http://www.bioconductor.org/packages/release/bioc/html/BitSeq.html)
 transcript expression inference
+- [and more](http://bioconductor.org/packages/release/BiocViews.html#___RNASeq)
 
 ---
 
@@ -374,7 +376,7 @@ finish(rprt)
 <br><br>
 
 - [biomaRt](http://www.bioconductor.org/packages/release/bioc/html/biomaRt.html)
-- [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html): `select()` function, works with the annotation packages `org.Hs.eg.db`:
+- [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html): `select()` works with the annotation packages `org.Hs.eg.db`:
 
 
 ```r

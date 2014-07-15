@@ -25,10 +25,12 @@ slides and code:
 
 - [mikelove.github.io/biocrnaseq](http://mikelove.github.io/biocrnaseq)
 - [github.com/mikelove/biocrnaseq](http://github.com/mikelove/biocrnaseq)
-  
+
 ---
 
 # Preparing gene models
+
+<br><br>
 
 ```{r, eval=FALSE}
 library( "GenomicFeatures" )
@@ -47,9 +49,9 @@ smart to use `saveDb()` to only do this once
 
 <br><br>
 
-- `makeTranscriptDbFromGFF()` accepts GTF
+- `makeTranscriptDbFromGFF()` accepts GTF files
 - `library(TxDb.Hsapiens.UCSC.hg19.knownGene)` ready to go
-- soon also, `AnnotationHub` will offer ready to go
+- soon `AnnotationHub` will offer ready to go
 
 ---
 
@@ -57,7 +59,7 @@ smart to use `saveDb()` to only do this once
 
 <br><br>
 
-To convert from `chrX` to `X`:
+To convert from `chrX` to `X` and back:
 
 ```{r, eval=FALSE}
 seqlevelsStyle(gr) <- "NCBI"
@@ -68,9 +70,9 @@ seqlevelsStyle(gr) <- "UCSC"
 
 # Extract exons for each gene
 
-```{r, echo=FALSE}
-suppressPackageStartupMessages(library("GenomicRanges"))
-suppressPackageStartupMessages(library("parathyroidSE"))
+```{r, echo=FALSE, messages=FALSE}
+library("GenomicRanges")
+library("parathyroidSE")
 data(parathyroidGenesSE)
 se <- parathyroidGenesSE
 exonsByGene <- rowData(se)
@@ -82,7 +84,7 @@ exonsByGene <- exonsBy( txdb, by="gene" )
 ```
 
 ```{r}
-head( exonsByGene[[1]] )
+exonsByGene[[ 1 ]][ 1:4 ]
 ```
 
 ---
@@ -119,6 +121,7 @@ se <- summarizeOverlaps( features=exonsByGene,
 - [GenomicAlignments](http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html)
 - [htseq-count](http://www-huber.embl.de/users/anders/HTSeq/doc/count.html): python library
 - [featureCounts](http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html): `featureCounts()`
+- [easyRNASeq](http://www.bioconductor.org/packages/release/bioc/html/easyRNASeq.html)
 
 ---
 
@@ -171,6 +174,7 @@ differential exon usage
 - [DSS](http://www.bioconductor.org/packages/release/bioc/html/DSS.html)
 - [BitSeq](http://www.bioconductor.org/packages/release/bioc/html/BitSeq.html)
 transcript expression inference
+- [and more](http://bioconductor.org/packages/release/BiocViews.html#___RNASeq)
 
 ---
 
@@ -332,7 +336,7 @@ finish(rprt)
 <br><br>
 
 - [biomaRt](http://www.bioconductor.org/packages/release/bioc/html/biomaRt.html)
-- [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html): `select()` function, works with the annotation packages `org.Hs.eg.db`:
+- [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html): `select()` works with the annotation packages `org.Hs.eg.db`:
 
 ```{r, eval=FALSE}
 tab <- select(org.Hs.eg.db, genes, "SYMBOL", "ENSEMBL")
