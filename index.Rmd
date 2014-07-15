@@ -21,23 +21,22 @@ knit        : slidify::knit2slides
 
 ---
 
-# Preparing gene models part 1
-
-[GenomicFeatures](http://www.bioconductor.org/packages/release/bioc/html/GenomicFeatures.html)
+# Preparing gene models
 
 ```{r, eval=FALSE}
 library( "GenomicFeatures" )
 # takes ~10 min
-txdb <- makeTranscriptDbFromBiomart(
-  biomart="ensembl",
-  dataset="hsapiens_gene_ensembl" )
+txdb <- makeTranscriptDbFromBiomart( biomart="ensembl",
+                                    dataset="hsapiens_gene_ensembl" )
 ```
 
 smart to use `saveDb()` to only do this once
 
+- [GenomicFeatures](http://www.bioconductor.org/packages/release/bioc/html/GenomicFeatures.html)
+
 ---
 
-# Preparing gene models part 2
+# Preparing gene models
 
 - `makeTranscriptDbFromGFF()` accepts GTF
 - `library(TxDb.Hsapiens.UCSC.hg19.knownGene)` ready to go
@@ -54,36 +53,22 @@ seqlevelsStyle(gr) <- "UCSC"
 
 ---
 
-# What's in txdb?
-
-`sqlite3 txdb.sqlite '.tables'`
-
-`cds exon metadata transcript chrominfo gene splicing`
-
----
-
-# What's in txdb?
-
-```{r}
-library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-TxDb.Hsapiens.UCSC.hg19.knownGene
-```
-
----
-
 # Extract exons for each gene
+
+```{r, echo=FALSE}
+library(parathyroidSE)
+data(parathyroidGenesSE)
+data(exonsByGene)
+se <- parathyroidGenesSE
+```
 
 ```{r, eval=FALSE}
 # takes ~30 seconds
 exonsByGene <- exonsBy( txdb, by="gene" )
 ```
 
----
-
-# Extract exons for each gene
-
-```{r} 
-# TODO show exonsByGene
+```{r}
+exonsByGene
 ```
 
 ---
@@ -95,6 +80,8 @@ library( "Rsamtools" )
 bamLst <- BamFileList( fls, yieldSize=2000000 )
 ```
 
+- [Rsamtools](http://www.bioconductor.org/packages/release/bioc/html/Rsamtools.html)
+
 ---
 
 # Read counting
@@ -102,6 +89,7 @@ bamLst <- BamFileList( fls, yieldSize=2000000 )
 ```{r, eval=FALSE}
 library( "GenomicAlignments" )
 register( MulticoreParam( workers=4 ) )
+# takes e.g. ~30 minutes per sample for 40 million PE reads 
 se <- summarizeOverlaps( features=exonsByGene,
                         reads=bamLst,
                         mode="Union",
@@ -109,6 +97,8 @@ se <- summarizeOverlaps( features=exonsByGene,
                         ignore.strand=TRUE,
                         fragments=TRUE )
 ```
+
+- [GenomicAlignments](http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html)
 
 ---
 
@@ -120,21 +110,45 @@ se <- summarizeOverlaps( features=exonsByGene,
 
 # Metadata stored without user effort
 
-```{r, eval=FALSE}
+```{r}
 metadata( rowData( se ) )
+```
+
+---
+
+# Add sample data
+
+```{r, eval=FALSE}
+samples <- read.csv( "sample_data.csv" )
+colData( se ) <- DataFrame( samples )
 ```
 
 ---
 
 # Exploratory data analysis (EDA)
 
+```{r, eval=FALSE}
+dds <- DESeqDataSet( se, ~ group + condition )
+rld <- rlog( dds )
+plotPCA( rld )
+```
+
+<center><img src="pca.png" width=500/></center>
+
 ---
 
 # Differential expression analysis
 
+- [DESeq2](http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html)
+- [edgeR](http://www.bioconductor.org/packages/release/bioc/html/edgeR.html)
+- [limma](http://www.bioconductor.org/packages/release/bioc/html/limma.html) + voom normalization
+- [DSS](http://www.bioconductor.org/packages/release/bioc/html/DSS.html)
+- [BitSeq](http://www.bioconductor.org/packages/release/bioc/html/BitSeq.html)
+transcript expression inference
+
 ---
 
-# The generalized linear model part 1
+# The generalized linear model
 
 \[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]
 
@@ -148,7 +162,7 @@ metadata( rowData( se ) )
 
 ---
 
-# The generalized linear model part 2
+# The generalized linear model
 
 \[ \log q_{ij} = \sum_r x_{jr} \beta_{ir} \]
 
@@ -194,15 +208,46 @@ metadata( rowData( se ) )
 
 ---
 
+# Differential expression analysis
+
+```{r, eval=FALSE}
+# takes e.g. ~25 seconds for 8 samples, 35,000 genes
+dds <- DESeq( dds )
+res <- results( dds )
+res <- results( dds, contrast=c("condition","trt","untrt") )
+plotMA( res )
+```
+
+<center><img src="plotma.png" width=400/></center>
+
+---
+
 # Normalization for sample-specific GC and transcript length
 
+- [cqn](http://www.bioconductor.org/packages/release/bioc/html/cqn.html)
+conditional quantile normalization
+- [EDASeq](http://www.bioconductor.org/packages/release/bioc/html/EDASeq.html)
+
 <center><img src="cqn.png" width=700/></center>
+
+<center>cqn package vignette</center>
 
 ---
 
 # Controlling for unknown batch
 
-<center><img src="sva.png" width=700/></center>
+- [sva](http://www.bioconductor.org/packages/release/bioc/html/sva.html): `svaseq()`
+surrogate variable analysis
+- [RUVSeq](http://www.bioconductor.org/packages/release/bioc/html/RUVSeq.html):
+remove unwanted variation
+
+returns a matrix with columns which are surrogate variables
+
+---
+
+# Controlling for unknown batch
+
+<center><img src="sva.png"/></center>
 
 [Leek and Storey (2007)](http://dx.doi.org/10.1371/journal.pgen.0030161)
 
@@ -210,7 +255,35 @@ metadata( rowData( se ) )
 
 # ReportingTools
 
+```{r, eval=FALSE}
+rprt <- HTMLReport(shortName = "analysis",
+                   title = "RNA-Seq analysis",
+                   reportDirectory = "./reports")
+publish(dds, rprt, pvalueCutoff=0.1,
+        annotation.db="org.Hs.eg.db",
+        factor = dds$condition,
+        reportDir="./reports")
+finish(rprt)
+```
+
+- [ReportingTools](http://www.bioconductor.org/packages/release/bioc/html/ReportingTools.html)
+
+---
+
+# ReportingTools
+
 <center><img src="reptools.png" width=700/></center>
+
+---
+
+# Manual annotation
+
+- [biomaRt](http://www.bioconductor.org/packages/release/bioc/html/biomaRt.html)
+- [AnnotationDbi](http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html): `select()` function, works with the annotation packages `org.Hs.eg.db`:
+
+```{r, eval=FALSE}
+tab <- select(org.Hs.eg.db, genes, "SYMBOL", "ENSEMBL")
+```
 
 ---
 
@@ -226,7 +299,7 @@ metadata( rowData( se ) )
 
 ---
 
-# Thanks
+# Acknowledgments
 
 - Bioconductor core team
 - *DESeq*/*DEXSeq* team

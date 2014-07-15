@@ -27,22 +27,23 @@
 </article>
 
 <article class="" id="slide-2" style="background:;">
-  <h3>Preparing gene models part 1</h3>
-  <p><a href="http://www.bioconductor.org/packages/release/bioc/html/GenomicFeatures.html">GenomicFeatures</a></p>
-
-<pre><code class="r">library( &quot;GenomicFeatures&quot; )
+  <h3>Preparing gene models</h3>
+  <pre><code class="r">library( &quot;GenomicFeatures&quot; )
 # takes ~10 min
-txdb &lt;- makeTranscriptDbFromBiomart(
-  biomart=&quot;ensembl&quot;,
-  dataset=&quot;hsapiens_gene_ensembl&quot; )
+txdb &lt;- makeTranscriptDbFromBiomart( biomart=&quot;ensembl&quot;,
+                                    dataset=&quot;hsapiens_gene_ensembl&quot; )
 </code></pre>
 
 <p>smart to use <code>saveDb()</code> to only do this once</p>
 
+<ul>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/GenomicFeatures.html">GenomicFeatures</a></li>
+</ul>
+
 </article>
 
 <article class="" id="slide-3" style="background:;">
-  <h3>Preparing gene models part 2</h3>
+  <h3>Preparing gene models</h3>
   <ul>
 <li><code>makeTranscriptDbFromGFF()</code> accepts GTF</li>
 <li><code>library(TxDb.Hsapiens.UCSC.hg19.knownGene)</code> ready to go</li>
@@ -60,69 +61,58 @@ seqlevelsStyle(gr) &lt;- &quot;UCSC&quot;
 </article>
 
 <article class="" id="slide-5" style="background:;">
-  <h3>What&#39;s in txdb?</h3>
-  <p><code>sqlite3 txdb.sqlite &#39;.tables&#39;</code></p>
-
-<p><code>cds exon metadata transcript chrominfo gene splicing</code></p>
-
-</article>
-
-<article class="" id="slide-6" style="background:;">
-  <h3>What&#39;s in txdb?</h3>
-  <pre><code class="r">library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-TxDb.Hsapiens.UCSC.hg19.knownGene
-</code></pre>
-
-<pre><code>## TranscriptDb object:
-## | Db type: TranscriptDb
-## | Supporting package: GenomicFeatures
-## | Data source: UCSC
-## | Genome: hg19
-## | Organism: Homo sapiens
-## | UCSC Table: knownGene
-## | Resource URL: http://genome.ucsc.edu/
-## | Type of Gene ID: Entrez Gene ID
-## | Full dataset: yes
-## | miRBase build ID: GRCh37
-## | transcript_nrow: 82960
-## | exon_nrow: 289969
-## | cds_nrow: 237533
-## | Db created by: GenomicFeatures package from Bioconductor
-## | Creation time: 2014-03-17 16:15:59 -0700 (Mon, 17 Mar 2014)
-## | GenomicFeatures version at creation time: 1.15.11
-## | RSQLite version at creation time: 0.11.4
-## | DBSCHEMAVERSION: 1.0
-</code></pre>
-
-</article>
-
-<article class="" id="slide-7" style="background:;">
   <h3>Extract exons for each gene</h3>
   <pre><code class="r"># takes ~30 seconds
 exonsByGene &lt;- exonsBy( txdb, by=&quot;gene&quot; )
 </code></pre>
 
-</article>
+<pre><code class="r">exonsByGene
+</code></pre>
 
-<article class="" id="slide-8" style="background:;">
-  <h3>Extract exons for each gene</h3>
-  <pre><code class="r"># TODO show exonsByGene
+<pre><code>## GRangesList of length 100:
+## $ENSG00000000003 
+## GRanges with 17 ranges and 2 metadata columns:
+##        seqnames               ranges strand   |   exon_id       exon_name
+##           &lt;Rle&gt;            &lt;IRanges&gt;  &lt;Rle&gt;   | &lt;integer&gt;     &lt;character&gt;
+##    [1]        X [99883667, 99884983]      -   |    664095 ENSE00001459322
+##    [2]        X [99885756, 99885863]      -   |    664096 ENSE00000868868
+##    [3]        X [99887482, 99887565]      -   |    664097 ENSE00000401072
+##    [4]        X [99887538, 99887565]      -   |    664098 ENSE00001849132
+##    [5]        X [99888402, 99888536]      -   |    664099 ENSE00003554016
+##    ...      ...                  ...    ... ...       ...             ...
+##   [13]        X [99890555, 99890743]      -   |    664106 ENSE00003512331
+##   [14]        X [99891188, 99891686]      -   |    664108 ENSE00001886883
+##   [15]        X [99891605, 99891803]      -   |    664109 ENSE00001855382
+##   [16]        X [99891790, 99892101]      -   |    664110 ENSE00001863395
+##   [17]        X [99894942, 99894988]      -   |    664111 ENSE00001828996
+## 
+## ...
+## &lt;99 more elements&gt;
+## ---
+## seqlengths:
+##                  1                 2 ...            LRG_99
+##          249250621         243199373 ...             13294
 </code></pre>
 
 </article>
 
-<article class="" id="slide-9" style="background:;">
+<article class="" id="slide-6" style="background:;">
   <h3>Read counting</h3>
   <pre><code class="r">library( &quot;Rsamtools&quot; )
 bamLst &lt;- BamFileList( fls, yieldSize=2000000 )
 </code></pre>
 
+<ul>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/Rsamtools.html">Rsamtools</a></li>
+</ul>
+
 </article>
 
-<article class="" id="slide-10" style="background:;">
+<article class="" id="slide-7" style="background:;">
   <h3>Read counting</h3>
   <pre><code class="r">library( &quot;GenomicAlignments&quot; )
 register( MulticoreParam( workers=4 ) )
+# takes e.g. ~30 minutes per sample for 40 million PE reads 
 se &lt;- summarizeOverlaps( features=exonsByGene,
                         reads=bamLst,
                         mode=&quot;Union&quot;,
@@ -131,33 +121,121 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
                         fragments=TRUE )
 </code></pre>
 
+<ul>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html">GenomicAlignments</a></li>
+</ul>
+
 </article>
 
-<article class="" id="slide-11" style="background:;">
+<article class="" id="slide-8" style="background:;">
   <h3>SummarizedExperiment</h3>
   <p><center><img src="summarizedexperiment.png" width=700/></center></p>
 
 </article>
 
-<article class="" id="slide-12" style="background:;">
+<article class="" id="slide-9" style="background:;">
   <h3>Metadata stored without user effort</h3>
   <pre><code class="r">metadata( rowData( se ) )
 </code></pre>
 
+<pre><code>## $genomeInfo
+## $genomeInfo$`Db type`
+## [1] &quot;TranscriptDb&quot;
+## 
+## $genomeInfo$`Supporting package`
+## [1] &quot;GenomicFeatures&quot;
+## 
+## $genomeInfo$`Data source`
+## [1] &quot;BioMart&quot;
+## 
+## $genomeInfo$Organism
+## [1] &quot;Homo sapiens&quot;
+## 
+## $genomeInfo$`Resource URL`
+## [1] &quot;www.biomart.org:80&quot;
+## 
+## $genomeInfo$`BioMart database`
+## [1] &quot;ensembl&quot;
+## 
+## $genomeInfo$`BioMart database version`
+## [1] &quot;ENSEMBL GENES 72 (SANGER UK)&quot;
+## 
+## $genomeInfo$`BioMart dataset`
+## [1] &quot;hsapiens_gene_ensembl&quot;
+## 
+## $genomeInfo$`BioMart dataset description`
+## [1] &quot;Homo sapiens genes (GRCh37.p11)&quot;
+## 
+## $genomeInfo$`BioMart dataset version`
+## [1] &quot;GRCh37.p11&quot;
+## 
+## $genomeInfo$`Full dataset`
+## [1] &quot;yes&quot;
+## 
+## $genomeInfo$`miRBase build ID`
+## [1] NA
+## 
+## $genomeInfo$transcript_nrow
+## [1] &quot;213140&quot;
+## 
+## $genomeInfo$exon_nrow
+## [1] &quot;737783&quot;
+## 
+## $genomeInfo$cds_nrow
+## [1] &quot;531154&quot;
+## 
+## $genomeInfo$`Db created by`
+## [1] &quot;GenomicFeatures package from Bioconductor&quot;
+## 
+## $genomeInfo$`Creation time`
+## [1] &quot;2013-07-30 17:30:25 +0200 (Tue, 30 Jul 2013)&quot;
+## 
+## $genomeInfo$`GenomicFeatures version at creation time`
+## [1] &quot;1.13.21&quot;
+## 
+## $genomeInfo$`RSQLite version at creation time`
+## [1] &quot;0.11.4&quot;
+## 
+## $genomeInfo$DBSCHEMAVERSION
+## [1] &quot;1.0&quot;
+</code></pre>
+
+</article>
+
+<article class="" id="slide-10" style="background:;">
+  <h3>Add sample data</h3>
+  <pre><code class="r">samples &lt;- read.csv( &quot;sample_data.csv&quot; )
+colData( se ) &lt;- DataFrame( samples )
+</code></pre>
+
+</article>
+
+<article class="" id="slide-11" style="background:;">
+  <h3>Exploratory data analysis (EDA)</h3>
+  <pre><code class="r">dds &lt;- DESeqDataSet( se, ~ group + condition )
+rld &lt;- rlog( dds )
+plotPCA( rld )
+</code></pre>
+
+<p><center><img src="pca.png" width=500/></center></p>
+
+</article>
+
+<article class="" id="slide-12" style="background:;">
+  <h3>Differential expression analysis</h3>
+  <ul>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html">DESeq2</a></li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/edgeR.html">edgeR</a></li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/limma.html">limma</a> + voom normalization</li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/DSS.html">DSS</a></li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/BitSeq.html">BitSeq</a>
+transcript expression inference</li>
+</ul>
+
 </article>
 
 <article class="" id="slide-13" style="background:;">
-  <h3>Exploratory data analysis (EDA)</h3>
-  
-</article>
-
-<article class="" id="slide-14" style="background:;">
-  <h3>Differential expression analysis</h3>
-  
-</article>
-
-<article class="" id="slide-15" style="background:;">
-  <h3>The generalized linear model part 1</h3>
+  <h3>The generalized linear model</h3>
   <p>\[ K_{ij} \sim \text{NB}( \mu_{ij}, \alpha_i )  \]</p>
 
 <ul>
@@ -174,8 +252,8 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 </article>
 
-<article class="" id="slide-16" style="background:;">
-  <h3>The generalized linear model part 2</h3>
+<article class="" id="slide-14" style="background:;">
+  <h3>The generalized linear model</h3>
   <p>\[ \log q_{ij} = \sum_r x_{jr} \beta_{ir} \]</p>
 
 <p>\[ \begin{array}{c}
@@ -198,7 +276,7 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 </article>
 
-<article class="" id="slide-17" style="background:;">
+<article class="" id="slide-15" style="background:;">
   <h3>Multigroup comparisons in DESeq2</h3>
   <p>\[ \begin{array}{c}
 \log q_1 \\
@@ -222,15 +300,49 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 </article>
 
-<article class="" id="slide-18" style="background:;">
+<article class="" id="slide-16" style="background:;">
+  <h3>Differential expression analysis</h3>
+  <pre><code class="r"># takes e.g. ~25 seconds for 8 samples, 35,000 genes
+dds &lt;- DESeq( dds )
+res &lt;- results( dds )
+res &lt;- results( dds, contrast=c(&quot;condition&quot;,&quot;trt&quot;,&quot;untrt&quot;) )
+plotMA( res )
+</code></pre>
+
+<p><center><img src="plotma.png" width=400/></center></p>
+
+</article>
+
+<article class="" id="slide-17" style="background:;">
   <h3>Normalization for sample-specific GC and transcript length</h3>
-  <p><center><img src="cqn.png" width=700/></center></p>
+  <ul>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/cqn.html">cqn</a>
+conditional quantile normalization</li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/EDASeq.html">EDASeq</a></li>
+</ul>
+
+<p><center><img src="cqn.png" width=700/></center></p>
+
+<p><center>cqn package vignette</center></p>
+
+</article>
+
+<article class="" id="slide-18" style="background:;">
+  <h3>Controlling for unknown batch</h3>
+  <ul>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/sva.html">sva</a>: <code>svaseq()</code>
+surrogate variable analysis</li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/RUVSeq.html">RUVSeq</a>:
+remove unwanted variation</li>
+</ul>
+
+<p>returns a matrix with columns which are surrogate variables</p>
 
 </article>
 
 <article class="" id="slide-19" style="background:;">
   <h3>Controlling for unknown batch</h3>
-  <p><center><img src="sva.png" width=700/></center></p>
+  <p><center><img src="sva.png"/></center></p>
 
 <p><a href="http://dx.doi.org/10.1371/journal.pgen.0030161">Leek and Storey (2007)</a></p>
 
@@ -238,11 +350,41 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 <article class="" id="slide-20" style="background:;">
   <h3>ReportingTools</h3>
-  <p><center><img src="reptools.png" width=700/></center></p>
+  <pre><code class="r">rprt &lt;- HTMLReport(shortName = &quot;analysis&quot;,
+                   title = &quot;RNA-Seq analysis&quot;,
+                   reportDirectory = &quot;./reports&quot;)
+publish(dds, rprt, pvalueCutoff=0.1,
+        annotation.db=&quot;org.Hs.eg.db&quot;,
+        factor = dds$condition,
+        reportDir=&quot;./reports&quot;)
+finish(rprt)
+</code></pre>
+
+<ul>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/ReportingTools.html">ReportingTools</a></li>
+</ul>
 
 </article>
 
 <article class="" id="slide-21" style="background:;">
+  <h3>ReportingTools</h3>
+  <p><center><img src="reptools.png" width=700/></center></p>
+
+</article>
+
+<article class="" id="slide-22" style="background:;">
+  <h3>Manual annotation</h3>
+  <ul>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/biomaRt.html">biomaRt</a></li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html">AnnotationDbi</a>: <code>select()</code> function, works with the annotation packages <code>org.Hs.eg.db</code>:</li>
+</ul>
+
+<pre><code class="r">tab &lt;- select(org.Hs.eg.db, genes, &quot;SYMBOL&quot;, &quot;ENSEMBL&quot;)
+</code></pre>
+
+</article>
+
+<article class="" id="slide-23" style="background:;">
   <h3>Support</h3>
   <ul>
 <li>mailing list:
@@ -259,8 +401,8 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 </article>
 
-<article class="" id="slide-22" style="background:;">
-  <h3>Thanks</h3>
+<article class="" id="slide-24" style="background:;">
+  <h3>Acknowledgments</h3>
   <ul>
 <li>Bioconductor core team</li>
 <li><em>DESeq</em>/<em>DEXSeq</em> team
