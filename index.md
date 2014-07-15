@@ -211,6 +211,9 @@ differential exon usage
 - [DSS](http://www.bioconductor.org/packages/release/bioc/html/DSS.html)
 - [BitSeq](http://www.bioconductor.org/packages/release/bioc/html/BitSeq.html)
 transcript expression inference
+- [cummeRbund](http://www.bioconductor.org/packages/release/bioc/html/cummeRbund.html)
+  import and visualize Cufflinks results
+- [monocle](http://www.bioconductor.org/packages/devel/bioc/html/monocle.html) single-cell
 - [and more](http://bioconductor.org/packages/release/BiocViews.html#___RNASeq)
 
 ---
