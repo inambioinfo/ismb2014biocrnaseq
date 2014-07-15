@@ -47,7 +47,7 @@ txdb &lt;- makeTranscriptDbFromBiomart( biomart=&quot;ensembl&quot;,
   <ul>
 <li><code>makeTranscriptDbFromGFF()</code> accepts GTF</li>
 <li><code>library(TxDb.Hsapiens.UCSC.hg19.knownGene)</code> ready to go</li>
-<li>soon also, <code>AnnotationDbi</code> will offer ready to go</li>
+<li>soon also, <code>AnnotationHub</code> will offer ready to go</li>
 </ul>
 
 </article>
@@ -66,32 +66,22 @@ seqlevelsStyle(gr) &lt;- &quot;UCSC&quot;
 exonsByGene &lt;- exonsBy( txdb, by=&quot;gene&quot; )
 </code></pre>
 
-<pre><code class="r">exonsByGene
+<pre><code class="r">head( exonsByGene[[1]] )
 </code></pre>
 
-<pre><code>## GRangesList of length 100:
-## $ENSG00000000003 
-## GRanges with 17 ranges and 2 metadata columns:
-##        seqnames               ranges strand   |   exon_id       exon_name
-##           &lt;Rle&gt;            &lt;IRanges&gt;  &lt;Rle&gt;   | &lt;integer&gt;     &lt;character&gt;
-##    [1]        X [99883667, 99884983]      -   |    664095 ENSE00001459322
-##    [2]        X [99885756, 99885863]      -   |    664096 ENSE00000868868
-##    [3]        X [99887482, 99887565]      -   |    664097 ENSE00000401072
-##    [4]        X [99887538, 99887565]      -   |    664098 ENSE00001849132
-##    [5]        X [99888402, 99888536]      -   |    664099 ENSE00003554016
-##    ...      ...                  ...    ... ...       ...             ...
-##   [13]        X [99890555, 99890743]      -   |    664106 ENSE00003512331
-##   [14]        X [99891188, 99891686]      -   |    664108 ENSE00001886883
-##   [15]        X [99891605, 99891803]      -   |    664109 ENSE00001855382
-##   [16]        X [99891790, 99892101]      -   |    664110 ENSE00001863395
-##   [17]        X [99894942, 99894988]      -   |    664111 ENSE00001828996
-## 
-## ...
-## &lt;99 more elements&gt;
-## ---
-## seqlengths:
-##                  1                 2 ...            LRG_99
-##          249250621         243199373 ...             13294
+<pre><code>## GRanges with 6 ranges and 2 metadata columns:
+##       seqnames               ranges strand |   exon_id       exon_name
+##          &lt;Rle&gt;            &lt;IRanges&gt;  &lt;Rle&gt; | &lt;integer&gt;     &lt;character&gt;
+##   [1]        X [99883667, 99884983]      - |    664095 ENSE00001459322
+##   [2]        X [99885756, 99885863]      - |    664096 ENSE00000868868
+##   [3]        X [99887482, 99887565]      - |    664097 ENSE00000401072
+##   [4]        X [99887538, 99887565]      - |    664098 ENSE00001849132
+##   [5]        X [99888402, 99888536]      - |    664099 ENSE00003554016
+##   [6]        X [99888402, 99888536]      - |    664100 ENSE00003658801
+##   ---
+##   seqlengths:
+##                    1                 2 ...            LRG_99
+##            249250621         243199373 ...             13294
 </code></pre>
 
 </article>
@@ -123,6 +113,8 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 <ul>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html">GenomicAlignments</a></li>
+<li><a href="http://www-huber.embl.de/users/anders/HTSeq/doc/count.html">htseq-count</a>: python library</li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html">featureCounts</a>: <code>featureCounts()</code></li>
 </ul>
 
 </article>
@@ -135,69 +127,26 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 <article class="" id="slide-9" style="background:;">
   <h3>Metadata stored without user effort</h3>
-  <pre><code class="r">metadata( rowData( se ) )
+  <pre><code class="r">metadata( rowData( se ) )[[ 1 ]][ 1:6 ]
 </code></pre>
 
-<pre><code>## $genomeInfo
-## $genomeInfo$`Db type`
+<pre><code>## $`Db type`
 ## [1] &quot;TranscriptDb&quot;
 ## 
-## $genomeInfo$`Supporting package`
+## $`Supporting package`
 ## [1] &quot;GenomicFeatures&quot;
 ## 
-## $genomeInfo$`Data source`
+## $`Data source`
 ## [1] &quot;BioMart&quot;
 ## 
-## $genomeInfo$Organism
+## $Organism
 ## [1] &quot;Homo sapiens&quot;
 ## 
-## $genomeInfo$`Resource URL`
+## $`Resource URL`
 ## [1] &quot;www.biomart.org:80&quot;
 ## 
-## $genomeInfo$`BioMart database`
+## $`BioMart database`
 ## [1] &quot;ensembl&quot;
-## 
-## $genomeInfo$`BioMart database version`
-## [1] &quot;ENSEMBL GENES 72 (SANGER UK)&quot;
-## 
-## $genomeInfo$`BioMart dataset`
-## [1] &quot;hsapiens_gene_ensembl&quot;
-## 
-## $genomeInfo$`BioMart dataset description`
-## [1] &quot;Homo sapiens genes (GRCh37.p11)&quot;
-## 
-## $genomeInfo$`BioMart dataset version`
-## [1] &quot;GRCh37.p11&quot;
-## 
-## $genomeInfo$`Full dataset`
-## [1] &quot;yes&quot;
-## 
-## $genomeInfo$`miRBase build ID`
-## [1] NA
-## 
-## $genomeInfo$transcript_nrow
-## [1] &quot;213140&quot;
-## 
-## $genomeInfo$exon_nrow
-## [1] &quot;737783&quot;
-## 
-## $genomeInfo$cds_nrow
-## [1] &quot;531154&quot;
-## 
-## $genomeInfo$`Db created by`
-## [1] &quot;GenomicFeatures package from Bioconductor&quot;
-## 
-## $genomeInfo$`Creation time`
-## [1] &quot;2013-07-30 17:30:25 +0200 (Tue, 30 Jul 2013)&quot;
-## 
-## $genomeInfo$`GenomicFeatures version at creation time`
-## [1] &quot;1.13.21&quot;
-## 
-## $genomeInfo$`RSQLite version at creation time`
-## [1] &quot;0.11.4&quot;
-## 
-## $genomeInfo$DBSCHEMAVERSION
-## [1] &quot;1.0&quot;
 </code></pre>
 
 </article>
@@ -225,6 +174,8 @@ plotPCA( rld )
   <h3>Differential expression analysis</h3>
   <ul>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html">DESeq2</a></li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/DEXSeq.html">DEXSeq</a>
+differential exon usage</li>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/edgeR.html">edgeR</a></li>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/limma.html">limma</a> + voom normalization</li>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/DSS.html">DSS</a></li>
@@ -314,6 +265,18 @@ plotMA( res )
 </article>
 
 <article class="" id="slide-17" style="background:;">
+  <h3>Plot counts for a single gene</h3>
+  <pre><code class="r">gene &lt;- rownames( res )[ order( res$pvalue ) ][ 1 ]
+plotCounts( dds, gene, &quot;condition&quot; )
+</code></pre>
+
+<p><center><img src="plotcounts.png" width=400/></center></p>
+
+<p>in <em>DESeq2</em> &gt;= v1.5</p>
+
+</article>
+
+<article class="" id="slide-18" style="background:;">
   <h3>Normalization for sample-specific GC and transcript length</h3>
   <ul>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/cqn.html">cqn</a>
@@ -327,7 +290,7 @@ conditional quantile normalization</li>
 
 </article>
 
-<article class="" id="slide-18" style="background:;">
+<article class="" id="slide-19" style="background:;">
   <h3>Controlling for unknown batch</h3>
   <ul>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/sva.html">sva</a>: <code>svaseq()</code>
@@ -340,7 +303,7 @@ remove unwanted variation</li>
 
 </article>
 
-<article class="" id="slide-19" style="background:;">
+<article class="" id="slide-20" style="background:;">
   <h3>Controlling for unknown batch</h3>
   <p><center><img src="sva.png"/></center></p>
 
@@ -348,7 +311,7 @@ remove unwanted variation</li>
 
 </article>
 
-<article class="" id="slide-20" style="background:;">
+<article class="" id="slide-21" style="background:;">
   <h3>ReportingTools</h3>
   <pre><code class="r">rprt &lt;- HTMLReport(shortName = &quot;analysis&quot;,
                    title = &quot;RNA-Seq analysis&quot;,
@@ -366,13 +329,13 @@ finish(rprt)
 
 </article>
 
-<article class="" id="slide-21" style="background:;">
+<article class="" id="slide-22" style="background:;">
   <h3>ReportingTools</h3>
   <p><center><img src="reptools.png" width=700/></center></p>
 
 </article>
 
-<article class="" id="slide-22" style="background:;">
+<article class="" id="slide-23" style="background:;">
   <h3>Manual annotation</h3>
   <ul>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/biomaRt.html">biomaRt</a></li>
@@ -384,7 +347,7 @@ finish(rprt)
 
 </article>
 
-<article class="" id="slide-23" style="background:;">
+<article class="" id="slide-24" style="background:;">
   <h3>Support</h3>
   <ul>
 <li>mailing list:
@@ -401,7 +364,7 @@ finish(rprt)
 
 </article>
 
-<article class="" id="slide-24" style="background:;">
+<article class="" id="slide-25" style="background:;">
   <h3>Acknowledgments</h3>
   <ul>
 <li>Bioconductor core team</li>

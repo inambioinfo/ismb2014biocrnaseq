@@ -40,7 +40,7 @@ smart to use `saveDb()` to only do this once
 
 - `makeTranscriptDbFromGFF()` accepts GTF
 - `library(TxDb.Hsapiens.UCSC.hg19.knownGene)` ready to go
-- soon also, `AnnotationDbi` will offer ready to go
+- soon also, `AnnotationHub` will offer ready to go
 
 ---
 
@@ -56,10 +56,11 @@ seqlevelsStyle(gr) <- "UCSC"
 # Extract exons for each gene
 
 ```{r, echo=FALSE}
-library(parathyroidSE)
+suppressPackageStartupMessages(library("GenomicRanges"))
+suppressPackageStartupMessages(library("parathyroidSE"))
 data(parathyroidGenesSE)
-data(exonsByGene)
 se <- parathyroidGenesSE
+exonsByGene <- rowData(se)
 ```
 
 ```{r, eval=FALSE}
@@ -68,7 +69,7 @@ exonsByGene <- exonsBy( txdb, by="gene" )
 ```
 
 ```{r}
-exonsByGene
+head( exonsByGene[[1]] )
 ```
 
 ---
@@ -99,6 +100,8 @@ se <- summarizeOverlaps( features=exonsByGene,
 ```
 
 - [GenomicAlignments](http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html)
+- [htseq-count](http://www-huber.embl.de/users/anders/HTSeq/doc/count.html): python library
+- [featureCounts](http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html): `featureCounts()`
 
 ---
 
@@ -111,7 +114,7 @@ se <- summarizeOverlaps( features=exonsByGene,
 # Metadata stored without user effort
 
 ```{r}
-metadata( rowData( se ) )
+metadata( rowData( se ) )[[ 1 ]][ 1:6 ]
 ```
 
 ---
@@ -140,6 +143,8 @@ plotPCA( rld )
 # Differential expression analysis
 
 - [DESeq2](http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html)
+- [DEXSeq](http://www.bioconductor.org/packages/release/bioc/html/DEXSeq.html)
+differential exon usage
 - [edgeR](http://www.bioconductor.org/packages/release/bioc/html/edgeR.html)
 - [limma](http://www.bioconductor.org/packages/release/bioc/html/limma.html) + voom normalization
 - [DSS](http://www.bioconductor.org/packages/release/bioc/html/DSS.html)
@@ -219,6 +224,19 @@ plotMA( res )
 ```
 
 <center><img src="plotma.png" width=400/></center>
+
+---
+
+# Plot counts for a single gene
+
+```{r, eval=FALSE}
+gene <- rownames( res )[ order( res$pvalue ) ][ 1 ]
+plotCounts( dds, gene, "condition" )
+```
+
+<center><img src="plotcounts.png" width=400/></center>
+
+in *DESeq2* >= v1.5
 
 ---
 

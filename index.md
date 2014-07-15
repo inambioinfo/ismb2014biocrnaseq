@@ -41,7 +41,7 @@ smart to use `saveDb()` to only do this once
 
 - `makeTranscriptDbFromGFF()` accepts GTF
 - `library(TxDb.Hsapiens.UCSC.hg19.knownGene)` ready to go
-- soon also, `AnnotationDbi` will offer ready to go
+- soon also, `AnnotationHub` will offer ready to go
 
 ---
 
@@ -67,33 +67,23 @@ exonsByGene <- exonsBy( txdb, by="gene" )
 
 
 ```r
-exonsByGene
+head( exonsByGene[[1]] )
 ```
 
 ```
-## GRangesList of length 100:
-## $ENSG00000000003 
-## GRanges with 17 ranges and 2 metadata columns:
-##        seqnames               ranges strand   |   exon_id       exon_name
-##           <Rle>            <IRanges>  <Rle>   | <integer>     <character>
-##    [1]        X [99883667, 99884983]      -   |    664095 ENSE00001459322
-##    [2]        X [99885756, 99885863]      -   |    664096 ENSE00000868868
-##    [3]        X [99887482, 99887565]      -   |    664097 ENSE00000401072
-##    [4]        X [99887538, 99887565]      -   |    664098 ENSE00001849132
-##    [5]        X [99888402, 99888536]      -   |    664099 ENSE00003554016
-##    ...      ...                  ...    ... ...       ...             ...
-##   [13]        X [99890555, 99890743]      -   |    664106 ENSE00003512331
-##   [14]        X [99891188, 99891686]      -   |    664108 ENSE00001886883
-##   [15]        X [99891605, 99891803]      -   |    664109 ENSE00001855382
-##   [16]        X [99891790, 99892101]      -   |    664110 ENSE00001863395
-##   [17]        X [99894942, 99894988]      -   |    664111 ENSE00001828996
-## 
-## ...
-## <99 more elements>
-## ---
-## seqlengths:
-##                  1                 2 ...            LRG_99
-##          249250621         243199373 ...             13294
+## GRanges with 6 ranges and 2 metadata columns:
+##       seqnames               ranges strand |   exon_id       exon_name
+##          <Rle>            <IRanges>  <Rle> | <integer>     <character>
+##   [1]        X [99883667, 99884983]      - |    664095 ENSE00001459322
+##   [2]        X [99885756, 99885863]      - |    664096 ENSE00000868868
+##   [3]        X [99887482, 99887565]      - |    664097 ENSE00000401072
+##   [4]        X [99887538, 99887565]      - |    664098 ENSE00001849132
+##   [5]        X [99888402, 99888536]      - |    664099 ENSE00003554016
+##   [6]        X [99888402, 99888536]      - |    664100 ENSE00003658801
+##   ---
+##   seqlengths:
+##                    1                 2 ...            LRG_99
+##            249250621         243199373 ...             13294
 ```
 
 ---
@@ -126,6 +116,8 @@ se <- summarizeOverlaps( features=exonsByGene,
 ```
 
 - [GenomicAlignments](http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html)
+- [htseq-count](http://www-huber.embl.de/users/anders/HTSeq/doc/count.html): python library
+- [featureCounts](http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html): `featureCounts()`
 
 ---
 
@@ -139,70 +131,27 @@ se <- summarizeOverlaps( features=exonsByGene,
 
 
 ```r
-metadata( rowData( se ) )
+metadata( rowData( se ) )[[ 1 ]][ 1:6 ]
 ```
 
 ```
-## $genomeInfo
-## $genomeInfo$`Db type`
+## $`Db type`
 ## [1] "TranscriptDb"
 ## 
-## $genomeInfo$`Supporting package`
+## $`Supporting package`
 ## [1] "GenomicFeatures"
 ## 
-## $genomeInfo$`Data source`
+## $`Data source`
 ## [1] "BioMart"
 ## 
-## $genomeInfo$Organism
+## $Organism
 ## [1] "Homo sapiens"
 ## 
-## $genomeInfo$`Resource URL`
+## $`Resource URL`
 ## [1] "www.biomart.org:80"
 ## 
-## $genomeInfo$`BioMart database`
+## $`BioMart database`
 ## [1] "ensembl"
-## 
-## $genomeInfo$`BioMart database version`
-## [1] "ENSEMBL GENES 72 (SANGER UK)"
-## 
-## $genomeInfo$`BioMart dataset`
-## [1] "hsapiens_gene_ensembl"
-## 
-## $genomeInfo$`BioMart dataset description`
-## [1] "Homo sapiens genes (GRCh37.p11)"
-## 
-## $genomeInfo$`BioMart dataset version`
-## [1] "GRCh37.p11"
-## 
-## $genomeInfo$`Full dataset`
-## [1] "yes"
-## 
-## $genomeInfo$`miRBase build ID`
-## [1] NA
-## 
-## $genomeInfo$transcript_nrow
-## [1] "213140"
-## 
-## $genomeInfo$exon_nrow
-## [1] "737783"
-## 
-## $genomeInfo$cds_nrow
-## [1] "531154"
-## 
-## $genomeInfo$`Db created by`
-## [1] "GenomicFeatures package from Bioconductor"
-## 
-## $genomeInfo$`Creation time`
-## [1] "2013-07-30 17:30:25 +0200 (Tue, 30 Jul 2013)"
-## 
-## $genomeInfo$`GenomicFeatures version at creation time`
-## [1] "1.13.21"
-## 
-## $genomeInfo$`RSQLite version at creation time`
-## [1] "0.11.4"
-## 
-## $genomeInfo$DBSCHEMAVERSION
-## [1] "1.0"
 ```
 
 ---
@@ -233,6 +182,8 @@ plotPCA( rld )
 # Differential expression analysis
 
 - [DESeq2](http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html)
+- [DEXSeq](http://www.bioconductor.org/packages/release/bioc/html/DEXSeq.html)
+differential exon usage
 - [edgeR](http://www.bioconductor.org/packages/release/bioc/html/edgeR.html)
 - [limma](http://www.bioconductor.org/packages/release/bioc/html/limma.html) + voom normalization
 - [DSS](http://www.bioconductor.org/packages/release/bioc/html/DSS.html)
@@ -313,6 +264,20 @@ plotMA( res )
 ```
 
 <center><img src="plotma.png" width=400/></center>
+
+---
+
+# Plot counts for a single gene
+
+
+```r
+gene <- rownames( res )[ order( res$pvalue ) ][ 1 ]
+plotCounts( dds, gene, "condition" )
+```
+
+<center><img src="plotcounts.png" width=400/></center>
+
+in *DESeq2* >= v1.5
 
 ---
 
