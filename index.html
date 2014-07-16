@@ -107,7 +107,9 @@ exonsByGene &lt;- exonsBy( txdb, by=&quot;gene&quot; )
 
 <p><code>yieldSize</code> for controlling memory:</p>
 
-<pre><code class="r">library( &quot;Rsamtools&quot; )
+<pre><code class="r">samples &lt;- read.csv( &quot;sample_data.csv&quot; )
+fls &lt;- samples$filename
+library( &quot;Rsamtools&quot; )
 bamLst &lt;- BamFileList( fls, yieldSize=2000000 )
 </code></pre>
 
@@ -133,7 +135,7 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 <ul>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html">GenomicAlignments</a></li>
 <li><a href="http://www-huber.embl.de/users/anders/HTSeq/doc/count.html">htseq-count</a>: python library</li>
-<li><a href="http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html">featureCounts</a>: <code>featureCounts()</code></li>
+<li><a href="http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html">Rsubread</a>: <code>featureCounts()</code></li>
 <li><a href="http://www.bioconductor.org/packages/release/bioc/html/easyRNASeq.html">easyRNASeq</a></li>
 </ul>
 
@@ -177,8 +179,7 @@ se &lt;- summarizeOverlaps( features=exonsByGene,
 
 <p><code>DataFrame</code> is a powerful data frame defined in <code>IRanges</code>:</p>
 
-<pre><code class="r">samples &lt;- read.csv( &quot;sample_data.csv&quot; )
-colData( se ) &lt;- DataFrame( samples )
+<pre><code class="r">colData( se ) &lt;- DataFrame( samples )
 </code></pre>
 
 </article>
@@ -187,7 +188,7 @@ colData( se ) &lt;- DataFrame( samples )
   <h3>Exploratory data analysis (EDA)</h3>
   <pre><code class="r">dds &lt;- DESeqDataSet( se, ~ group + condition )
 rld &lt;- rlog( dds )
-plotPCA( rld )
+plotPCA( rld, intgroup=&quot;condition&quot; )
 </code></pre>
 
 <p><center><img src="pca.png" width=500/></center></p>

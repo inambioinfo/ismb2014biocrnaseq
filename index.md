@@ -109,6 +109,8 @@ exonsByGene[[ 1 ]][ 1:4 ]
 
 
 ```r
+samples <- read.csv( "sample_data.csv" )
+fls <- samples$filename
 library( "Rsamtools" )
 bamLst <- BamFileList( fls, yieldSize=2000000 )
 ```
@@ -134,7 +136,7 @@ se <- summarizeOverlaps( features=exonsByGene,
 
 - [GenomicAlignments](http://www.bioconductor.org/packages/release/bioc/html/GenomicAlignments.html)
 - [htseq-count](http://www-huber.embl.de/users/anders/HTSeq/doc/count.html): python library
-- [featureCounts](http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html): `featureCounts()`
+- [Rsubread](http://www.bioconductor.org/packages/release/bioc/html/Rsubread.html): `featureCounts()`
 - [easyRNASeq](http://www.bioconductor.org/packages/release/bioc/html/easyRNASeq.html)
 
 ---
@@ -182,7 +184,6 @@ metadata( rowData( se ) )[[ 1 ]][ 1:6 ]
 
 
 ```r
-samples <- read.csv( "sample_data.csv" )
 colData( se ) <- DataFrame( samples )
 ```
 
@@ -194,7 +195,7 @@ colData( se ) <- DataFrame( samples )
 ```r
 dds <- DESeqDataSet( se, ~ group + condition )
 rld <- rlog( dds )
-plotPCA( rld )
+plotPCA( rld, intgroup="condition" )
 ```
 
 <center><img src="pca.png" width=500/></center>
