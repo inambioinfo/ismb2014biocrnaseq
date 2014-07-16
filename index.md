@@ -28,6 +28,14 @@ slides and code:
 
 ---
 
+# What's not covered here
+
+- read alignment
+- de novo feature identification
+- differential exon usage / differential isoform expression
+
+---
+
 # Preparing gene models
 
 <br><br>
@@ -53,20 +61,6 @@ smart to use `saveDb()` to only do this once
 - `makeTranscriptDbFromGFF()` accepts GTF files
 - `library(TxDb.Hsapiens.UCSC.hg19.knownGene)` ready to go
 - soon `AnnotationHub` will offer ready to go
-
----
-
-# Super useful
-
-<br><br>
-
-To convert from `chrX` to `X` and back:
-
-
-```r
-seqlevelsStyle(gr) <- "NCBI"
-seqlevelsStyle(gr) <- "UCSC"
-```
 
 ---
 
@@ -100,6 +94,21 @@ exonsByGene[[ 1 ]][ 1:4 ]
 ```
 
 ---
+
+# Super useful
+
+<br><br>
+
+To convert from `chrX` to `X` and back:
+
+
+```r
+seqlevelsStyle(gr) <- "NCBI"
+seqlevelsStyle(gr) <- "UCSC"
+```
+
+---
+
 
 # Read counting
 
@@ -208,7 +217,7 @@ plotPCA( rld, intgroup="condition" )
 - [DEXSeq](http://www.bioconductor.org/packages/release/bioc/html/DEXSeq.html)
 differential exon usage
 - [edgeR](http://www.bioconductor.org/packages/release/bioc/html/edgeR.html)
-- [limma](http://www.bioconductor.org/packages/release/bioc/html/limma.html) + voom normalization
+- [limma](http://www.bioconductor.org/packages/release/bioc/html/limma.html) + voom transformation
 - [DSS](http://www.bioconductor.org/packages/release/bioc/html/DSS.html)
 - [BitSeq](http://www.bioconductor.org/packages/release/bioc/html/BitSeq.html)
 transcript expression inference
@@ -358,10 +367,9 @@ return a matrix with columns which are surrogate variables
 rprt <- HTMLReport(shortName = "analysis",
                    title = "RNA-Seq analysis",
                    reportDirectory = "./reports")
-publish(dds, rprt, pvalueCutoff=0.1,
-        annotation.db="org.Hs.eg.db",
-        factor = dds$condition,
-        reportDir="./reports")
+publish(res, rprt,
+        DataSet=dds,
+        annotation.db="org.Hs.eg.db")
 finish(rprt)
 ```
 
