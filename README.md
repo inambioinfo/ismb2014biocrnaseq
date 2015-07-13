@@ -2,8 +2,8 @@
 
 slides are visible here:
 
-http://mikelove.github.io/biocrnaseq
+http://mikelove.github.io/ismb2014biocrnaseq
 
 Rmd files are in the gh-pages branch:
 
-https://github.com/mikelove/biocrnaseq/tree/gh-pages
+https://github.com/mikelove/ismb2014biocrnaseq/tree/gh-pages
